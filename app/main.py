@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from app.models import Task, TaskCreate
 from app.storage import load_tasks, save_tasks
@@ -14,6 +14,15 @@ def read_root():
 @app.get("/tasks", response_model=list[Task])
 def get_tasks():
     return load_tasks()
+
+
+@app.get("/tasks/{task_id}", response_model=Task)
+def get_task(task_id: int):
+    tasks = load_tasks()
+    for task in tasks:
+        if task.id == task_id:
+            return task
+    raise HTTPException(status_code=404, detail="Task not found")
 
 
 @app.post("/tasks", response_model=Task, status_code=201)
