@@ -1,9 +1,30 @@
+import logging
+import time
+
 from fastapi import FastAPI, HTTPException
+from fastapi import Request
 
 from app.models import Task, TaskCreate, TaskUpdate
 from app.storage import find_task_index, load_tasks, save_tasks
 
 app = FastAPI(title="Study Tasks API")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("study_tasks")
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    started_at = time.perf_counter()
+    response = await call_next(request)
+    elapsed_ms = (time.perf_counter() - started_at) * 1000
+    logger.info(
+        "%s %s -> %s %.1fms",
+        request.method,
+        request.url.path,
+        response.status_code,
+        elapsed_ms,
+    )
+    return response
 
 
 @app.get("/")
