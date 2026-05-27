@@ -19,6 +19,13 @@ def load_tasks() -> list[Task]:
     return [Task(**task) for task in raw_tasks]
 
 
+def find_task_index(tasks: list[Task], task_id: int) -> int | None:
+    for index, task in enumerate(tasks):
+        if task.id == task_id:
+            return index
+    return None
+
+
 def save_tasks(tasks: list[Task]) -> None:
     DATA_FILE.parent.mkdir(exist_ok=True)
     with DATA_FILE.open("w", encoding="utf-8") as file:
