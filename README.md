@@ -3,8 +3,8 @@
 Small learning project with FastAPI. The idea is to keep simple study tasks in a
 JSON file and practice basic REST endpoints.
 
-## Run locally
-
+## Run locall
+#############
 ```bash
 python -m venv .venv
 pip install -r requirements.txt
