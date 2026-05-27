@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 
-from app.models import Task, TaskCreate
+from app.models import Task, TaskCreate, TaskUpdate
 from app.storage import load_tasks, save_tasks
 
 app = FastAPI(title="Study Tasks API")
@@ -33,3 +33,15 @@ def create_task(task: TaskCreate):
     tasks.append(new_task)
     save_tasks(tasks)
     return new_task
+
+
+@app.patch("/tasks/{task_id}", response_model=Task)
+def update_task(task_id: int, update: TaskUpdate):
+    tasks = load_tasks()
+    for index, task in enumerate(tasks):
+        if task.id == task_id:
+            updated_task = task.model_copy(update={"done": update.done})
+            tasks[index] = updated_task
+            save_tasks(tasks)
+            return updated_task
+    raise HTTPException(status_code=404, detail="Task not found")

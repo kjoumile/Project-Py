@@ -9,3 +9,7 @@ class Task(BaseModel):
 
 class TaskCreate(BaseModel):
     title: str = Field(min_length=1, max_length=120)
+
+
+class TaskUpdate(BaseModel):
+    done: bool
